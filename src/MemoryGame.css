@@ -3,14 +3,15 @@
   row-gap: 15px;
   column-gap: 15px;
   grid-template-columns: repeat(4, 1fr);
+  width: 100%;
 }
 
 .card {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 50px;
-  height: 70px;
+  width: 100px;
+  height: 130px;
   background-color: white;
   color: black;
 }
