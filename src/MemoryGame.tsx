@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, memo } from 'react'
 import type { FC } from 'react'
 import Card from './Card'
-
+import Timer from './Timer'
 import './MemoryGame.css'
 import generateDeck, {
   shuffle,
@@ -152,6 +152,7 @@ const MemoryGame: FC = (): JSX.Element => {
           <button onClick={resetGame}>Restart</button>
         </div>
       )}
+      <Timer timeFinished={state.gameOver} />
     </section>
   )
 }
