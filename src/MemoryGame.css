@@ -1,3 +1,5 @@
+$card-colour: #fff;
+
 .deck {
   display: grid;
   row-gap: 15px;
@@ -12,7 +14,7 @@
   align-items: center;
   width: 100px;
   height: 130px;
-  background-color: white;
+  background-color: $card-colour;
   color: black;
 
   &:hover {
@@ -21,7 +23,7 @@
 
   &.flipped {
     &:hover {
-      background-color: white;
+      background-color: $card-colour;
     }
   }
 }

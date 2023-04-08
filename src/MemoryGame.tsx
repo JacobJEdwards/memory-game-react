@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, memo } from 'react'
 import type { FC } from 'react'
 import './MemoryGame.css'
 
-const CARDS: Array<number> = [0, 1, 0, 1]
+const CARDS: Array<number> = [0, 1, 0, 1, 2, 3, 2, 3]
 
 type GameState = {
   deck: number[]
@@ -31,19 +31,20 @@ function shuffle<T>(array: Array<T>): T[] {
   //return shuffledArray
 }
 
-const Card: FC<CardProps> = memo((props: CardProps): JSX.Element => {
-  const { value, flipped, matched, onClick } = props
-  const isflipped = flipped || matched
+const Card: FC<CardProps> = memo(
+  ({ value, flipped, matched, onClick }: CardProps): JSX.Element => {
+    const isflipped = flipped || matched
 
-  return (
-    <div
-      className={`card ${isflipped ? 'flipped' : ''}`}
-      onClick={onClick}
-      aria-label={isflipped ? `Card flipped ${value}` : 'Card unflipped'}>
-      {flipped || matched ? value : ' '}
-    </div>
-  )
-})
+    return (
+      <div
+        className={`card ${isflipped ? 'flipped' : ''}`}
+        onClick={onClick}
+        aria-label={isflipped ? `Card flipped ${value}` : 'Card unflipped'}>
+        {flipped || matched ? value : ' '}
+      </div>
+    )
+  }
+)
 
 const MemoryGame: FC = (): JSX.Element => {
   const [state, setState] = useState<GameState>({
