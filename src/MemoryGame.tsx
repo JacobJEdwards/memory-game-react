@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback, memo } from 'react'
+import type { FC } from 'react'
 import './MemoryGame.css'
 
-const CARDS: number[] = [0, 1, 0, 1]
+const CARDS: Array<number> = [0, 1, 0, 1]
 
 type GameState = {
   deck: number[]
@@ -11,36 +12,40 @@ type GameState = {
   gameOver: boolean
 }
 
-function shuffle<T>(array: T[]): T[] {
-  const shuffledArray = [...array]
-  for (let i = shuffledArray.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]]
-  }
-  return shuffledArray
+type CardProps = {
+  value: number
+  flipped: boolean
+  matched: boolean
+  onClick: () => void
 }
 
-const Card = memo(
-  (props: {
-    value: number
-    flipped: boolean
-    matched: boolean
-    onClick: () => void
-  }): JSX.Element => {
-    const { value, flipped, matched, onClick } = props
-    const isflipped = flipped || matched
+function shuffle<T>(array: Array<T>): T[] {
+  const shuffledArray = [...array]
+  shuffledArray.sort(() => Math.random() - 0.5)
+  return shuffledArray
+  //const shuffledArray = [...array]
+  //for (let i = shuffledArray.length - 1; i > 0; i--) {
+  //const j = Math.floor(Math.random() * (i + 1))
+  //;[shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]]
+  //}
+  //return shuffledArray
+}
 
-    return (
-      <div
-        className={`card ${isflipped ? 'flipped' : ''}`}
-        onClick={onClick}>
-        {flipped || matched ? value : ' '}
-      </div>
-    )
-  }
-)
+const Card: FC<CardProps> = memo((props: CardProps): JSX.Element => {
+  const { value, flipped, matched, onClick } = props
+  const isflipped = flipped || matched
 
-const MemoryGame = (): JSX.Element => {
+  return (
+    <div
+      className={`card ${isflipped ? 'flipped' : ''}`}
+      onClick={onClick}
+      aria-label={isflipped ? `Card flipped ${value}` : 'Card unflipped'}>
+      {flipped || matched ? value : ' '}
+    </div>
+  )
+})
+
+const MemoryGame: FC = (): JSX.Element => {
   const [state, setState] = useState<GameState>({
     deck: shuffle(CARDS),
     flipped: Array(CARDS.length).fill(false),

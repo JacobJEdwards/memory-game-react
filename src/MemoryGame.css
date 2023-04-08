@@ -14,8 +14,14 @@
   height: 130px;
   background-color: white;
   color: black;
-}
 
-.card:hover {
-  background-color: whitesmoke;
+  &:hover {
+    background-color: whitesmoke;
+  }
+
+  &.flipped {
+    &:hover {
+      background-color: white;
+    }
+  }
 }
