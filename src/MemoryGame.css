@@ -1,4 +1,5 @@
 $card-colour: #fff;
+$matched-colour: #fbf2e1;
 
 .deck {
   display: grid;
@@ -16,14 +17,27 @@ $card-colour: #fff;
   height: 130px;
   background-color: $card-colour;
   color: black;
+  transition: transform 0.3s ease-in-out;
+  cursor: pointer;
+  transform: rotateY(180deg);
 
   &:hover {
     background-color: whitesmoke;
   }
 
   &.flipped {
+    cursor: default;
+    transform: rotateY(360deg);
     &:hover {
       background-color: $card-colour;
+    }
+
+    &.matched {
+      cursor: default;
+      background-color: $matched-colour;
+      &:hover {
+        background-color: $matched-colour;
+      }
     }
   }
 }

@@ -20,34 +20,35 @@ type CardProps = {
   onClick: () => void
 }
 
+// generates a deck of cards
 const generateDeck = (): number[] => {
-  const deck = []
-  for (let i = 0; i < NUM_PAIRS; i++) {
-    const card = Math.floor(Math.random() * 100)
-    deck.push(card, card)
+  // set used to ensure no duplicates
+  const cards = new Set<number>()
+  while (cards.size < NUM_PAIRS) {
+    cards.add(Math.floor(Math.random() * 100))
   }
+  // flatMap is used to duplicate the cards
+  const deck = Array.from(cards).flatMap((card) => [card, card])
   return shuffle(deck)
 }
 
+// shuffles an array
 function shuffle<T>(array: Array<T>): T[] {
   const shuffledArray = [...array]
   shuffledArray.sort(() => Math.random() - 0.5)
   return shuffledArray
-  //const shuffledArray = [...array]
-  //for (let i = shuffledArray.length - 1; i > 0; i--) {
-  //const j = Math.floor(Math.random() * (i + 1))
-  //;[shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]]
-  //}
-  //return shuffledArray
 }
 
+// Card component -> memoized to prevent unnecessary re-renders
 const Card: FC<CardProps> = memo(
   ({ value, flipped, matched, onClick }: CardProps): JSX.Element => {
     const isflipped = flipped || matched
 
     return (
       <div
-        className={`card ${isflipped ? 'flipped' : ''}`}
+        className={`card ${isflipped ? 'flipped' : ''} ${
+          matched ? 'matched' : ''
+        }`}
         onClick={onClick}
         aria-label={isflipped ? `Card flipped ${value}` : 'Card unflipped'}>
         {flipped || matched ? value : ' '}
@@ -55,6 +56,10 @@ const Card: FC<CardProps> = memo(
     )
   }
 )
+
+// checks if the game is won -> all cards are flipped
+const isGameWon = (flipped: boolean[]): boolean =>
+  flipped.every((value) => value)
 
 const MemoryGame: FC = (): JSX.Element => {
   const [state, setState] = useState<GameState>({
@@ -66,9 +71,9 @@ const MemoryGame: FC = (): JSX.Element => {
     gameOver: false,
   })
 
-  // win condition
+  // win condition -> if every card is flipped
   useEffect(() => {
-    if (state.flipped.every((value) => value)) {
+    if (isGameWon(state.flipped)) {
       setState((prevState) => ({
         ...prevState,
         disabled: true,
@@ -77,8 +82,10 @@ const MemoryGame: FC = (): JSX.Element => {
     }
   }, [state.flipped])
 
+  // use callback to prevent unnecessary regenerations of the function
   const handleCardClick = useCallback(
     (index: number): void => {
+      // if the card is disabled, flipped or matched, do nothing
       if (
         state.disabled ||
         state.flipped[index] ||
@@ -87,12 +94,14 @@ const MemoryGame: FC = (): JSX.Element => {
         return
       }
 
+      // creates a copy of the state
       const newFlipped = [...state.flipped]
-      newFlipped[index] = true
       const newMatchedCards = [...state.matchedCards]
+      // updates the state
+      newFlipped[index] = true
       newMatchedCards[index] = true
 
-      // gets the indexes of the all the flipped cards
+      // gets the indexes of the most recent flipped cards
       const flippedCards = newMatchedCards.reduce<number[]>((acc, val, idx) => {
         if (val) {
           acc.push(idx)
