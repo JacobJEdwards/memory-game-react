@@ -2,11 +2,12 @@ import React, { useState, useEffect, useCallback, memo } from 'react'
 import type { FC } from 'react'
 import './MemoryGame.css'
 
-const CARDS: Array<number> = [0, 1, 0, 1, 2, 3, 2, 3]
+const NUM_PAIRS = 4
 
 type GameState = {
   deck: number[]
   flipped: boolean[]
+  matchedCards: boolean[]
   matched: number[]
   disabled: boolean
   gameOver: boolean
@@ -17,6 +18,15 @@ type CardProps = {
   flipped: boolean
   matched: boolean
   onClick: () => void
+}
+
+const generateDeck = (): number[] => {
+  const deck = []
+  for (let i = 0; i < NUM_PAIRS; i++) {
+    const card = Math.floor(Math.random() * 100)
+    deck.push(card, card)
+  }
+  return shuffle(deck)
 }
 
 function shuffle<T>(array: Array<T>): T[] {
@@ -48,8 +58,9 @@ const Card: FC<CardProps> = memo(
 
 const MemoryGame: FC = (): JSX.Element => {
   const [state, setState] = useState<GameState>({
-    deck: shuffle(CARDS),
-    flipped: Array(CARDS.length).fill(false),
+    deck: generateDeck(),
+    flipped: Array(NUM_PAIRS * 2).fill(false),
+    matchedCards: Array(NUM_PAIRS * 2).fill(false),
     matched: [],
     disabled: false,
     gameOver: false,
@@ -78,8 +89,11 @@ const MemoryGame: FC = (): JSX.Element => {
 
       const newFlipped = [...state.flipped]
       newFlipped[index] = true
+      const newMatchedCards = [...state.matchedCards]
+      newMatchedCards[index] = true
 
-      const flippedCards = newFlipped.reduce<number[]>((acc, val, idx) => {
+      // gets the indexes of the all the flipped cards
+      const flippedCards = newMatchedCards.reduce<number[]>((acc, val, idx) => {
         if (val) {
           acc.push(idx)
         }
@@ -89,6 +103,7 @@ const MemoryGame: FC = (): JSX.Element => {
       if (flippedCards.length === 2) {
         setState((prevState) => ({
           ...prevState,
+          matchedCards: Array(NUM_PAIRS * 2).fill(false),
           flipped: newFlipped,
           disabled: true,
         }))
@@ -119,6 +134,7 @@ const MemoryGame: FC = (): JSX.Element => {
       } else {
         setState((prevState) => ({
           ...prevState,
+          matchedCards: newMatchedCards,
           flipped: newFlipped,
         }))
       }
@@ -130,7 +146,8 @@ const MemoryGame: FC = (): JSX.Element => {
     setState((prevState) => ({
       ...prevState,
       deck: shuffle(prevState.deck),
-      flipped: Array(CARDS.length).fill(false),
+      flipped: Array(NUM_PAIRS * 2).fill(false),
+      matchedCards: Array(NUM_PAIRS * 2).fill(false),
       matched: [],
       disabled: false,
       gameOver: false,
