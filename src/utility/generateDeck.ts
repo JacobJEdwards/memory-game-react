@@ -10,12 +10,17 @@ const generateDeck = (numPairs: number): number[] => {
   return shuffle(deck)
 }
 
-// shuffles an array
-export function shuffle<T>(array: Array<T>): T[] {
-  const shuffledArray = [...array]
-  shuffledArray.sort(() => Math.random() - 0.5)
-  return shuffledArray
+
+export function shuffle<T>(array: T[]): T[] {
+  const shuffledArray = [...array];
+  for (let i = shuffledArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+  }
+  return shuffledArray;
 }
+
+
 
 export const generateEmptyDeck = (length: number): boolean[] => {
   return Array.from({ length: length }, () => false)

@@ -1,9 +1,13 @@
 import React from 'react'
 
-const StartScreen = (props: { isStart: () => void }) => {
+type StartScreenProps = {
+  isStart: () => void
+}
+
+const StartScreen = ({ isStart }: StartScreenProps) => {
   return (
     <div>
-      <button onClick={props.isStart}>Start</button>
+      <button onClick={isStart}>Start</button>
     </div>
   )
 }

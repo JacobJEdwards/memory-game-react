@@ -17,6 +17,17 @@ type GameState = {
   matched: number[]
   disabled: boolean
   gameOver: boolean
+  resetTimer: boolean
+}
+
+const INITIAL_STATE: GameState = {
+  deck: generateDeck(NUM_PAIRS),
+  flipped: generateEmptyDeck(NUM_PAIRS * 2),
+  matchedCards: generateEmptyDeck(NUM_PAIRS * 2),
+  matched: [],
+  disabled: false,
+  gameOver: false,
+  resetTimer: false,
 }
 
 // maybe replace useState with useReducer
@@ -27,14 +38,7 @@ type GameAction =
   | { type: 'RESET_MATCHED' }
 
 const MemoryGame: FC = (): JSX.Element => {
-  const [state, setState] = useState<GameState>({
-    deck: generateDeck(NUM_PAIRS),
-    flipped: generateEmptyDeck(NUM_PAIRS * 2),
-    matchedCards: generateEmptyDeck(NUM_PAIRS * 2),
-    matched: [],
-    disabled: false,
-    gameOver: false,
-  })
+  const [state, setState] = useState<GameState>(INITIAL_STATE)
 
   // checks if the game is won -> all cards are flipped
   const isGameWon = (flipped: boolean[]): boolean =>
@@ -123,13 +127,9 @@ const MemoryGame: FC = (): JSX.Element => {
 
   const resetGame = (): void => {
     setState((prevState) => ({
-      ...prevState,
-      deck: shuffle(prevState.deck),
-      flipped: generateEmptyDeck(NUM_PAIRS * 2),
-      matchedCards: generateEmptyDeck(NUM_PAIRS * 2),
-      matched: [],
-      disabled: false,
-      gameOver: false,
+      ...INITIAL_STATE,
+      deck: generateDeck(NUM_PAIRS),
+      resetTimer: !prevState.resetTimer,
     }))
   }
 
@@ -152,7 +152,10 @@ const MemoryGame: FC = (): JSX.Element => {
           <button onClick={resetGame}>Restart</button>
         </div>
       )}
-      <Timer timeFinished={state.gameOver} />
+      <Timer
+        pauseTimer={state.gameOver}
+        resetTimer={state.resetTimer}
+      />
     </section>
   )
 }

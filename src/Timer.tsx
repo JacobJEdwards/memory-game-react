@@ -1,18 +1,32 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import type { FC } from 'react'
 
 type TimerProps = {
-  timeFinished: boolean
+  pauseTimer: boolean
+  resetTimer: boolean
 }
 
-const Timer: FC<TimerProps> = ({ timeFinished }: TimerProps) => {
+const Timer: FC<TimerProps> = ({ pauseTimer, resetTimer }: TimerProps) => {
   const [count, setCount] = useState(0)
+  const timerRef = useRef<NodeJS.Timeout>()
 
   useEffect(() => {
-    if (timeFinished) return
+    timerRef.current = setTimeout(() => setCount((count) => count + 1), 1000)
 
-    setTimeout(() => setCount(count + 1), 1000)
+    return () => clearTimeout(timerRef.current!)
   }, [count])
+
+  useEffect(() => {
+    if (pauseTimer) {
+      clearTimeout(timerRef.current!)
+    }
+  }, [pauseTimer])
+
+  useEffect(() => {
+    setCount(0)
+    clearTimeout(timerRef.current!)
+    timerRef.current = setTimeout(() => setCount((count) => count + 1), 1000)
+  }, [resetTimer])
 
   return <div>{count}</div>
 }
