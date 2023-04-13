@@ -2,8 +2,11 @@
   "name": "memory-game-react",
   "private": true,
   "version": "0.0.0",
+  "homepage": "https://jacobjedwards.github.io/memory-game-react/",
   "type": "module",
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
