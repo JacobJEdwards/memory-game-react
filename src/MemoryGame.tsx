@@ -30,14 +30,13 @@ const INITIAL_STATE: GameState = {
   resetTimer: false,
 }
 
-// maybe replace useState with useReducer
-type GameAction =
-  | { type: 'RESET' }
-  | { type: 'FLIP_CARD'; payload: { index: number } }
-  | { type: 'MATCH_CARDS'; payload: { indexes: number[] } }
-  | { type: 'RESET_MATCHED' }
+interface MemoryGameProps {
+  numPairs: number
+}
 
-const MemoryGame: FC = (): JSX.Element => {
+const MemoryGame: FC<MemoryGameProps> = ({
+  numPairs,
+}: MemoryGameProps): JSX.Element => {
   const [state, setState] = useState<GameState>(INITIAL_STATE)
 
   // checks if the game is won -> all cards are flipped
@@ -46,7 +45,6 @@ const MemoryGame: FC = (): JSX.Element => {
 
   // win condition -> if every card is flipped
   useEffect(() => {
-    console.log(state.flipped)
     if (isGameWon(state.flipped)) {
       setState((prevState) => ({
         ...prevState,

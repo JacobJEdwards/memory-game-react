@@ -13,7 +13,7 @@ const App = () => {
   return (
     <div className='App'>
       <h1>Memory Game</h1>
-      {gameStarted && <MemoryGame />}
+      {gameStarted && <MemoryGame numPairs={3} />}
 
       {!gameStarted && !countStarted && (
         <StartScreen isStart={() => setCountStarted(true)} />
