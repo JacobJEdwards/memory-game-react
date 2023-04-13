@@ -1,6 +1,6 @@
 {
   "name": "memory-game-react",
-  "private": true,
+  "private": false,
   "homepage": "https://jacobjedwards.github.io/memory-game-react/",
   "version": "0.0.0",
   "type": "module",
